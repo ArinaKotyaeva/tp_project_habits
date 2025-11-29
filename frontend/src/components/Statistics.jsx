@@ -3,7 +3,7 @@ import { format, parseISO } from 'date-fns'
 import './Statistics.css'
 
 function Statistics() {
-  const [viewMode, setViewMode] = useState('day') // 'day' or 'week'
+  const [viewMode, setViewMode] = useState('day')
   const [dayStats, setDayStats] = useState(null)
   const [weekStats, setWeekStats] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -31,7 +31,6 @@ function Statistics() {
         setWeekStats(data)
       }
     } catch (error) {
-      console.error('Error fetching statistics:', error)
     } finally {
       setLoading(false)
     }

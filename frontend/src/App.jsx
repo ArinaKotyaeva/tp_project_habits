@@ -8,7 +8,7 @@ function App() {
   const [habits, setHabits] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [editingHabit, setEditingHabit] = useState(null)
-  const [activeTab, setActiveTab] = useState('habits') // 'habits' or 'statistics'
+  const [activeTab, setActiveTab] = useState('habits')
 
   useEffect(() => {
     fetchHabits()
@@ -23,7 +23,6 @@ function App() {
       const data = await response.json()
       setHabits(data)
     } catch (error) {
-      console.error('Error fetching habits:', error)
       alert('Не удалось загрузить привычки. Убедитесь, что backend сервер запущен на порту 8000.')
     }
   }
@@ -52,7 +51,6 @@ function App() {
         })
         fetchHabits()
       } catch (error) {
-        console.error('Error deleting habit:', error)
       }
     }
   }
@@ -70,7 +68,6 @@ function App() {
       }
       fetchHabits()
     } catch (error) {
-      console.error('Error toggling completion:', error)
     }
   }
 

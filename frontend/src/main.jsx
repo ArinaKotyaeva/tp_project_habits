@@ -15,7 +15,6 @@ try {
     </React.StrictMode>,
   )
 } catch (error) {
-  console.error('Error rendering app:', error)
   document.body.innerHTML = `
     <div style="padding: 20px; font-family: Arial;">
       <h1>Ошибка загрузки приложения</h1>

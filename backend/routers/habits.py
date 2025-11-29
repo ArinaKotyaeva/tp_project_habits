@@ -26,7 +26,6 @@ def get_habits(db: Session = Depends(get_db)):
     
     result = []
     for habit in habits:
-        # Проверяем, выполнена ли привычка сегодня
         completion = db.query(HabitCompletion).filter(
             and_(
                 HabitCompletion.habit_id == habit.id,
@@ -103,7 +102,6 @@ def complete_habit(habit_id: int, db: Session = Depends(get_db)):
     
     today = date.today()
     
-    # Проверяем, не выполнена ли уже сегодня
     existing = db.query(HabitCompletion).filter(
         and_(
             HabitCompletion.habit_id == habit_id,

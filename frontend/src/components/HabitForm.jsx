@@ -44,7 +44,6 @@ function HabitForm({ habit, onClose }) {
       
       onClose()
     } catch (error) {
-      console.error('Error saving habit:', error)
       alert('Ошибка при сохранении привычки')
     }
   }

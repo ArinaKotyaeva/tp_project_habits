@@ -18,10 +18,8 @@ def get_day_statistics(
     if target_date is None:
         target_date = date.today()
     
-    # Получаем все привычки
     total_habits = db.query(Habit).count()
     
-    # Получаем количество выполненных привычек за день
     completed_habits = db.query(HabitCompletion).filter(
         HabitCompletion.completion_date == target_date
     ).count()
@@ -42,17 +40,14 @@ def get_week_statistics(
     db: Session = Depends(get_db)
 ):
     if week_start is None:
-        # Начинаем неделю с понедельника
         today = date.today()
         days_since_monday = today.weekday()
         week_start = today - timedelta(days=days_since_monday)
     
     week_end = week_start + timedelta(days=6)
     
-    # Получаем все привычки
     total_habits = db.query(Habit).count()
     
-    # Получаем все выполнения за неделю
     completions = db.query(HabitCompletion).filter(
         and_(
             HabitCompletion.completion_date >= week_start,
@@ -60,13 +55,11 @@ def get_week_statistics(
         )
     ).all()
     
-    # Подсчитываем уникальные привычки, выполненные за неделю
     completed_habit_ids = set(completion.habit_id for completion in completions)
     completed_habits = len(completed_habit_ids)
     
     completion_rate = (completed_habits / total_habits * 100) if total_habits > 0 else 0.0
     
-    # Статистика по дням
     daily_stats = []
     current_date = week_start
     while current_date <= week_end:

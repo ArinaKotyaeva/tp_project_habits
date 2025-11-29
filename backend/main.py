@@ -7,12 +7,10 @@ from routers import habits, statistics
 from database import init_db
 import os
 
-# Инициализация базы данных
 init_db()
 
 app = FastAPI(title="Habits Tracker API", version="1.0.0")
 
-# CORS middleware для работы с фронтендом
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://localhost:5173"],
@@ -21,11 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Подключение роутеров
 app.include_router(habits.router, prefix="/api/habits", tags=["habits"])
 app.include_router(statistics.router, prefix="/api/statistics", tags=["statistics"])
 
-# Статические файлы для страницы статуса
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
@@ -33,7 +29,6 @@ if os.path.exists(static_dir):
 
 @app.get("/status")
 async def status_page():
-    """HTML страница со статусом сервера"""
     html_path = os.path.join(os.path.dirname(__file__), "static", "index.html")
     if os.path.exists(html_path):
         return FileResponse(html_path)
@@ -58,7 +53,6 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Проверка здоровья сервера"""
     return {
         "status": "healthy",
         "service": "Habits Tracker API",
