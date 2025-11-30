@@ -79,7 +79,11 @@ cd backend
 
 2. Создайте виртуальное окружение (если еще не создано):
 ```bash
+# Windows
 python -m venv venv
+
+# Linux/Mac
+python3 -m venv venv
 ```
 
 3. Активируйте виртуальное окружение:
@@ -175,3 +179,5 @@ cd frontend
 npm run build
 ```
 
+Задачи каждого участника с описанием можно посмотреть тут:
+https://miro.com/app/board/uXjVJioVWXs=/?share_link_id=356729867560
