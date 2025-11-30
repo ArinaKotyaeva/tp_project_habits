@@ -1,6 +1,7 @@
 # Учёт привычек
 
 CRUD-приложение для отслеживания ежедневных привычек
+Демонстрация работы приложения: https://drive.google.com/file/d/1KQkc6udAI5AFX-GXJIFUWNM-KVoqFIpj/view?usp=sharing 
 
 ## Описание
 
