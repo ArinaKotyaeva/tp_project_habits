@@ -1,6 +1,6 @@
 # Учёт привычек
 
-Веб-приложение для отслеживания ежедневных привычек с красивым интерфейсом и статистикой.
+CRUD-приложение для отслеживания ежедневных привычек
 
 ## Описание
 
@@ -14,54 +14,14 @@
 
 ### Backend
 - **Python 3.11+**
-- **FastAPI** - современный веб-фреймворк
-- **SQLAlchemy** - ORM для работы с базой данных
-- **SQLite** - база данных
+- **FastAPI** 
+- **SQLAlchemy** 
+- **SQLite**
 
 ### Frontend
-- **React 18** - библиотека для создания пользовательского интерфейса
-- **Vite** - инструмент сборки
-- **CSS3** - стилизация с градиентами и анимациями
-
-## Структура проекта
-
-```
-tp_project/
-├── backend/                 # Backend приложение
-│   ├── __init__.py
-│   ├── main.py             # Точка входа FastAPI
-│   ├── models.py           # Pydantic модели
-│   ├── database.py         # Настройка БД и SQLAlchemy модели
-│   ├── requirements.txt    # Python зависимости
-│   ├── .flake8            # Конфигурация flake8
-│   ├── .pylintrc          # Конфигурация pylint
-│   └── routers/           # API роутеры
-│       ├── __init__.py
-│       ├── habits.py      # CRUD операции для привычек
-│       └── statistics.py  # Статистика за день/неделю
-│
-├── frontend/               # Frontend приложение
-│   ├── src/
-│   │   ├── App.jsx        # Главный компонент
-│   │   ├── App.css
-│   │   ├── main.jsx       # Точка входа React
-│   │   ├── index.css
-│   │   └── components/    # React компоненты
-│   │       ├── HabitsList.jsx
-│   │       ├── HabitCard.jsx
-│   │       ├── HabitForm.jsx
-│   │       └── Statistics.jsx
-│   ├── package.json
-│   ├── vite.config.js
-│   └── .eslintrc.cjs
-│
-├── .github/
-│   └── workflows/
-│       └── ci.yml         # CI конфигурация
-│
-├── .gitignore
-└── README.md
-```
+- **React 18** 
+- **Vite** 
+- **CSS3** 
 
 ## Установка и запуск
 
@@ -150,8 +110,6 @@ Frontend будет доступен по адресу: http://localhost:3000
 - Полный CRUD для привычек
 - Отметка выполнения сохраняется на весь день
 - Статистика за день и неделю с переключением
-- Современный дизайн с градиентами
-- Адаптивная верстка для мобильных устройств
 - CI/CD с линтерами (flake8, pylint, eslint)
 
 ## Разработка
