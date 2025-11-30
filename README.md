@@ -112,30 +112,5 @@ Frontend будет доступен по адресу: http://localhost:3000
 - Статистика за день и неделю с переключением
 - CI/CD с линтерами (flake8, pylint, eslint)
 
-## Разработка
-
-### Линтинг
-
-**Backend:**
-```bash
-cd backend
-flake8 .
-pylint backend/
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm run lint
-```
-
-### Сборка
-
-**Frontend:**
-```bash
-cd frontend
-npm run build
-```
-
-Задачи каждого участника с описанием можно посмотреть тут:
+## Задачи каждого участника с описанием можно посмотреть тут:
 https://miro.com/app/board/uXjVJioVWXs=/?share_link_id=356729867560
