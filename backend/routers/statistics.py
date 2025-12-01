@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import and_, func
+from sqlalchemy import and_, func, distinct
 from datetime import date, timedelta
 from typing import Optional
 
@@ -41,30 +41,32 @@ def get_week_statistics(
 ):
     if week_start is None:
         today = date.today()
-        days_since_monday = today.weekday()
-        week_start = today - timedelta(days=days_since_monday)
+        week_start = today - timedelta(days=today.weekday())
     
     week_end = week_start + timedelta(days=6)
     
     total_habits = db.query(Habit).count()
     
-    completions = db.query(HabitCompletion).filter(
+    completed_habits_subquery = db.query(
+        distinct(HabitCompletion.habit_id)
+    ).filter(
         and_(
             HabitCompletion.completion_date >= week_start,
             HabitCompletion.completion_date <= week_end
         )
-    ).all()
+    ).subquery()
     
-    completed_habit_ids = set(completion.habit_id for completion in completions)
-    completed_habits = len(completed_habit_ids)
+    completed_habits = db.query(completed_habits_subquery).count()
     
     completion_rate = (completed_habits / total_habits * 100) if total_habits > 0 else 0.0
     
     daily_stats = []
     current_date = week_start
     while current_date <= week_end:
-        day_completions = [c for c in completions if c.completion_date == current_date]
-        day_completed_count = len(set(c.habit_id for c in day_completions))
+        day_completed_count = db.query(HabitCompletion).filter(
+            HabitCompletion.completion_date == current_date
+        ).count()
+        
         day_rate = (day_completed_count / total_habits * 100) if total_habits > 0 else 0.0
         
         daily_stats.append(StatisticsDay(
@@ -83,4 +85,3 @@ def get_week_statistics(
         completion_rate=round(completion_rate, 2),
         daily_stats=daily_stats
     )
-
