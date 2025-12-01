@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from sqlalchemy import and_, case
 from datetime import date
 from typing import List
 
@@ -22,48 +22,62 @@ def create_habit(habit: HabitCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=List[HabitWithCompletion])
 def get_habits(db: Session = Depends(get_db)):
     today = date.today()
-    habits = db.query(Habit).all()
     
-    result = []
-    for habit in habits:
-        completion = db.query(HabitCompletion).filter(
-            and_(
-                HabitCompletion.habit_id == habit.id,
-                HabitCompletion.completion_date == today
-            )
-        ).first()
-        
-        result.append(HabitWithCompletion(
+    habits_with_completion = db.query(
+        Habit,
+        case(
+            (db.query(HabitCompletion.id)
+             .filter(
+                 and_(
+                     HabitCompletion.habit_id == Habit.id,
+                     HabitCompletion.completion_date == today
+                 )
+             ).exists(), True),
+            else_=False
+        ).label('is_completed_today')
+    ).all()
+    
+    return [
+        HabitWithCompletion(
             id=habit.id,
             name=habit.name,
             description=habit.description,
             created_at=habit.created_at,
-            is_completed_today=completion is not None
-        ))
-    
-    return result
+            is_completed_today=is_completed_today
+        )
+        for habit, is_completed_today in habits_with_completion
+    ]
 
 
 @router.get("/{habit_id}", response_model=HabitWithCompletion)
 def get_habit(habit_id: int, db: Session = Depends(get_db)):
     today = date.today()
-    habit = db.query(Habit).filter(Habit.id == habit_id).first()
-    if not habit:
+    
+    habit_data = db.query(
+        Habit,
+        case(
+            (db.query(HabitCompletion.id)
+             .filter(
+                 and_(
+                     HabitCompletion.habit_id == Habit.id,
+                     HabitCompletion.completion_date == today
+                 )
+             ).exists(), True),
+            else_=False
+        ).label('is_completed_today')
+    ).filter(Habit.id == habit_id).first()
+    
+    if not habit_data:
         raise HTTPException(status_code=404, detail="Habit not found")
     
-    completion = db.query(HabitCompletion).filter(
-        and_(
-            HabitCompletion.habit_id == habit.id,
-            HabitCompletion.completion_date == today
-        )
-    ).first()
+    habit, is_completed_today = habit_data
     
     return HabitWithCompletion(
         id=habit.id,
         name=habit.name,
         description=habit.description,
         created_at=habit.created_at,
-        is_completed_today=completion is not None
+        is_completed_today=is_completed_today
     )
 
 
@@ -73,10 +87,9 @@ def update_habit(habit_id: int, habit_update: HabitUpdate, db: Session = Depends
     if not db_habit:
         raise HTTPException(status_code=404, detail="Habit not found")
     
-    if habit_update.name is not None:
-        db_habit.name = habit_update.name
-    if habit_update.description is not None:
-        db_habit.description = habit_update.description
+    update_data = habit_update.dict(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(db_habit, field, value)
     
     db.commit()
     db.refresh(db_habit)
@@ -115,8 +128,7 @@ def complete_habit(habit_id: int, db: Session = Depends(get_db)):
     completion = HabitCompletion(habit_id=habit_id, completion_date=today)
     db.add(completion)
     db.commit()
-    db.refresh(completion)
-    return {"message": "Habit completed successfully", "completion": completion}
+    return {"message": "Habit completed successfully"}
 
 
 @router.delete("/{habit_id}/complete")
@@ -135,4 +147,3 @@ def uncomplete_habit(habit_id: int, db: Session = Depends(get_db)):
     db.delete(completion)
     db.commit()
     return {"message": "Habit uncompleted successfully"}
-
