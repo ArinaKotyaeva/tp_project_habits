@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime, ForeignKey, Index
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -35,6 +35,10 @@ class HabitCompletion(Base):
     habit = relationship("Habit", back_populates="completions")
 
 
+Index('idx_completion_date_habit', HabitCompletion.completion_date, HabitCompletion.habit_id)
+Index('idx_habit_completion_date', HabitCompletion.habit_id, HabitCompletion.completion_date)
+
+
 def init_db():
     Base.metadata.create_all(bind=engine)
 
@@ -45,4 +49,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
